@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Basket;
 use App\Brand;
 use App\Category;
+use App\Models\Page;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -39,6 +40,9 @@ class ComposerServiceProvider extends ServiceProvider
         });
         View::composer('layout.site', function($view) {
             $view->with(['positions' => Basket::getCount()]);
+        });
+        View::composer('layout.part.pages', function($view) {
+            $view->with(['pages' => Page::all()]);
         });
     }
 }

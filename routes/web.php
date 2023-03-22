@@ -19,7 +19,8 @@ Route::name('user.')->prefix('user')->group(function () {
 });
 Auth::routes();
 
-Route::resource('item', 'ItemController');
+Route::get('/page/{slug}', 'PageController@show')->name('page.show');
+
 
 Route::group([
     'as' => 'admin.', // имя маршрута, например admin.index
@@ -32,8 +33,24 @@ Route::group([
     // CRUD-операции над категориями каталога
     Route::resource('category', 'CategoryController');
     Route::resource('brand', 'BrandController');
+    Route::resource('product', 'ProductController');
+    Route::get('product/category/{category}', 'ProductController@category')
+        ->name('product.category');
+    Route::resource('order', 'OrderController', ['except' => [
+        'create', 'store', 'destroy'
+    ]]);
+    // просмотр и редактирование пользователей
+    Route::resource('user', 'UserController', ['except' => [
+        'create', 'store', 'show', 'destroy'
+    ]]);
+    // CRUD-операции над страницами сайта
+    Route::resource('page', 'PageController');
+    Route::post('page/upload/image', 'PageController@uploadImage')
+        ->name('page.upload.image');
+    // удаление изображения в редакторе
+    Route::delete('page/remove/image', 'PageController@removeImage')
+        ->name('page.remove.image');
 });
-
 
 
 // это вариант указания пространства имен
@@ -41,7 +58,7 @@ Route::name('admin.')->prefix('admin')->group(function () {
     Route::get('index', 'Admin\IndexController@index')->name('index');
 });
 
-Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/', 'HomeController@index')->name('home');
 
 Route::get('/catalog/index', 'CatalogController@index')->name('catalog.index');
 Route::get('/catalog/category/{slug}', 'CatalogController@category')->name('catalog.category');

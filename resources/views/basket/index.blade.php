@@ -1,5 +1,4 @@
-@extends('layout.site')
-
+@extends('layout.site', ['title' => 'Ваша корзина'])
 @section('content')
     <h1>Ваша корзина</h1>
     @if (count($products))

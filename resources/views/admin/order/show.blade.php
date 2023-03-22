@@ -1,10 +1,20 @@
-@extends('layout.site', ['title' => 'Заказ размещен'])
+@extends('layout.admin', ['title' => 'Просмотр заказа'])
+
 @section('content')
-    <h1>Заказ размещен</h1>
+    <h1>Данные по заказу № {{ $order->id }}</h1>
 
-    <p>Ваш заказ успешно размещен. Наш менеджер скоро свяжется с Вами для уточнения деталей.</p>
+    <p>
+        Статус заказа:
+        @if ($order->status == 0)
+            <span class="text-danger">{{ $statuses[$order->status] }}</span>
+        @elseif (in_array($order->status, [1,2,3]))
+            <span class="text-success">{{ $statuses[$order->status] }}</span>
+        @else
+            {{ $statuses[$order->status] }}
+        @endif
+    </p>
 
-    <h2>Ваш заказ</h2>
+    <h3 class="mb-3">Состав заказа</h3>
     <table class="table table-bordered">
         <tr>
             <th>№</th>
@@ -13,6 +23,7 @@
             <th>Кол-во</th>
             <th>Стоимость</th>
         </tr>
+
         @foreach($order->items as $item)
             <tr>
                 <td>{{ $loop->iteration }}</td>
@@ -28,7 +39,7 @@
         </tr>
     </table>
 
-    <h2>Ваши данные</h2>
+    <h3 class="mb-3">Данные покупателя</h3>
     <p>Имя, фамилия: {{ $order->name }}</p>
     <p>Адрес почты: <a href="mailto:{{ $order->email }}">{{ $order->email }}</a></p>
     <p>Номер телефона: {{ $order->phone }}</p>

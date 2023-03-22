@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Page;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Route;
 
@@ -21,7 +22,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    const HOME = '/home';
 
     /**
      * Define your route model bindings, pattern filters, etc.
@@ -33,6 +34,18 @@ class RouteServiceProvider extends ServiceProvider
         //
 
         parent::boot();
+        /*
+       * Если мы в панели управления — страница будет получена из
+       * БД по id, если в публичной части сайта — то по slug
+       */
+        Route::bind('page', function($value) {
+            $current = Route::currentRouteName();
+            if ('page.show' == $current) { // публичная часть сайта
+                return Page::whereSlug($value)->firstOrFail();
+            }
+            // панель управления сайта
+            return Page::findOrFail($value);
+        });
     }
 
     /**

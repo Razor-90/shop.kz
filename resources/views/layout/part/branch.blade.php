@@ -4,7 +4,7 @@
             <a href="{{ route('catalog.category', ['slug' => $item->slug]) }}">{{ $item->name }}</a>
             @if (count($items->where('parent_id', $item->id)))
                 <span class="badge badge-dark">
-                <i class="fa fa-plus">+</i>
+                <i class="fa fa-plus"></i>
             </span>
                 @include('layout.part.branch', ['parent' => $item->id])
             @endif
