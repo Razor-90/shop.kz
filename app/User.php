@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Models\Profile;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -49,5 +50,9 @@ class User extends Authenticatable
      */
     public function getUpdatedAtAttribute($value) {
         return Carbon::createFromFormat('Y-m-d H:i:s', $value)->timezone('Europe/Moscow');
+    }
+
+    public function profiles() {
+        return $this->hasMany(Profile::class);
     }
 }

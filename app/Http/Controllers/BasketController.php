@@ -27,7 +27,37 @@ class BasketController extends Controller {
      * Форма оформления заказа
      */
     public function checkout() {
-        return view('basket.checkout');
+        $profile = null;
+        $profiles = null;
+        if (auth()->check()) { // если пользователь аутентифицирован
+            $user = auth()->user();
+            // ...и у него есть профили для оформления
+            $profiles = $user->profiles;
+            // ...и был запрошен профиль для оформления
+            $prof_id = (int)$request->input('profile_id');
+            if ($prof_id) {
+                $profile = $user->profiles()->whereIdAndUserId($prof_id, $user->id)->first();
+            }
+        }
+        return view('basket.checkout', compact('profiles', 'profile'));
+    }
+
+    public function profile(Request $request) {
+        if ( ! $request->ajax()) {
+            abort(404);
+        }
+        if ( ! auth()->check()) {
+            return response()->json(['error' => 'Нужна авторизация!'], 404);
+        }
+        $user = auth()->user();
+        $profile_id = (int)$request->input('profile_id');
+        if ($profile_id) {
+            $profile = $user->profiles()->whereIdAndUserId($profile_id, $user->id)->first();
+            if ($profile) {
+                return response()->json(['profile' => $profile]);
+            }
+        }
+        return response()->json(['error' => 'Профиль не найден!'], 404);
     }
 
     /**
@@ -36,9 +66,16 @@ class BasketController extends Controller {
     public function add(Request $request, $id) {
         $quantity = $request->input('quantity') ?? 1;
         $this->basket->increase($id, $quantity);
-        // выполняем редирект обратно на ту страницу,
-        // где была нажата кнопка «В корзину»
-        return back();
+        if ( ! $request->ajax()) {
+            // выполняем редирект обратно на ту страницу,
+            // где была нажата кнопка «В корзину»
+            return back();
+        }
+        // в случае ajax-запроса возвращаем html-код корзины в правом
+        // верхнем углу, чтобы заменить исходный html-код, потому что
+        // теперь количество позиций будет другим
+        $positions = $this->basket->products->count();
+        return view('basket.part.basket', compact('positions'));
     }
 
     /**

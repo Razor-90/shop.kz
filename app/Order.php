@@ -1,23 +1,13 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    //
-    protected $fillable = [
-        'user_id',
-        'name',
-        'email',
-        'phone',
-        'address',
-        'comment',
-        'amount',
-        'status',
-    ];
+
 
     const STATUSES = [
         0 => 'Новый',
@@ -28,6 +18,23 @@ class Order extends Model
     ];
 
 
+    protected $fillable = [
+        'user_id',
+        'name',
+        'email',
+        'phone',
+        'address',
+        'comment',
+        'amount',
+        'status',
+    ];
+    /* ... */
+    /**
+     * Связь «один ко многим» таблицы `orders` с таблицей `order_items`
+     */
+    public function items() {
+        return $this->hasMany(OrderItem::class);
+    }
 
     public function getCreatedAtAttribute($value) {
         return Carbon::createFromFormat('Y-m-d H:i:s', $value)->timezone('Europe/Moscow');

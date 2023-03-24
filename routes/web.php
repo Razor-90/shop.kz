@@ -13,14 +13,35 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::name('user.')->prefix('user')->group(function () {
-    Route::get('index', 'UserController@index')->name('index');
-    Auth::routes();
-});
 Auth::routes();
+
+Route::get('/', 'HomeController@index')->name('home');
 
 Route::get('/page/{slug}', 'PageController@show')->name('page.show');
 
+Route::name('user.')->prefix('user')->group(function () {
+    Auth::routes();
+});
+
+Route::group([
+    'as' => 'user.', // имя маршрута, например user.index
+    'prefix' => 'user', // префикс маршрута, например user/index
+    'middleware' => ['auth'] // один или несколько посредников
+], function () {
+    // главная страница личного кабинета пользователя
+    Route::get('index', 'UserController@index')->name('index');
+    // CRUD-операции над профилями пользователя
+    Route::resource('profile', 'ProfileController');
+    // просмотр списка заказов в личном кабинете
+    Route::get('order', 'OrderController@index')->name('order.index');
+    // просмотр отдельного заказа в личном кабинете
+    Route::get('order/{order}', 'OrderController@show')->name('order.show');
+});
+
+// это вариант указания пространства имен
+Route::name('admin.')->prefix('admin')->group(function () {
+    Route::get('index', 'Admin\IndexController@index')->name('index');
+});
 
 Route::group([
     'as' => 'admin.', // имя маршрута, например admin.index
@@ -52,22 +73,8 @@ Route::group([
         ->name('page.remove.image');
 });
 
-
-// это вариант указания пространства имен
-Route::name('admin.')->prefix('admin')->group(function () {
-    Route::get('index', 'Admin\IndexController@index')->name('index');
-});
-
-Route::get('/', 'HomeController@index')->name('home');
-
-Route::get('/catalog/index', 'CatalogController@index')->name('catalog.index');
-Route::get('/catalog/category/{slug}', 'CatalogController@category')->name('catalog.category');
-Route::get('/catalog/brand/{slug}', 'CatalogController@brand')->name('catalog.brand');
-Route::get('/catalog/product/{slug}', 'CatalogController@product')->name('catalog.product');
-
 Route::get('/basket/index', 'BasketController@index')->name('basket.index');
 Route::get('/basket/checkout', 'BasketController@checkout')->name('basket.checkout');
-
 Route::post('/basket/add/{id}', 'BasketController@add')
     ->where('id', '[0-9]+')
     ->name('basket.add');
@@ -77,14 +84,20 @@ Route::post('/basket/plus/{id}', 'BasketController@plus')
 Route::post('/basket/minus/{id}', 'BasketController@minus')
     ->where('id', '[0-9]+')
     ->name('basket.minus');
-
 Route::post('/basket/remove/{id}', 'BasketController@remove')
     ->where('id', '[0-9]+')
     ->name('basket.remove');
 Route::post('/basket/clear', 'BasketController@clear')->name('basket.clear');
-
 Route::post('/basket/saveorder', 'BasketController@saveOrder')->name('basket.saveorder');
 Route::get('/basket/success', 'BasketController@success')
     ->name('basket.success');
+Route::post('/basket/profile', 'BasketController@profile')
+    ->name('basket.profile');
+
+Route::get('/catalog/index', 'CatalogController@index')->name('catalog.index');
+Route::get('/catalog/category/{slug}', 'CatalogController@category')->name('catalog.category');
+Route::get('/catalog/brand/{slug}', 'CatalogController@brand')->name('catalog.brand');
+Route::get('/catalog/product/{slug}', 'CatalogController@product')->name('catalog.product');
+
 
 

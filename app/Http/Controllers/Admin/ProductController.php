@@ -53,7 +53,7 @@ class ProductController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProductCatalogRequest $request) {
+    public function store(Request $request) {
         $data = $request->all();
         $data['image'] = $this->imageSaver->upload($request, null, 'product');
         $product = Product::create($data);
@@ -93,7 +93,7 @@ class ProductController extends Controller {
      * @param  \App\Models\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(ProductCatalogRequest $request, Brand $brand) {
+    public function update(Request $request, Product $product) {
         $data = $request->all();
         $data['image'] = $this->imageSaver->upload($request, $product, 'product');
         $product->update($data);

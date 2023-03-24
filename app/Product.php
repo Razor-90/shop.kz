@@ -8,11 +8,16 @@ class Product extends Model
 {
     //
     protected $fillable = [
-        'parent_id',
+        'category_id',
+        'brand_id',
         'name',
         'slug',
         'content',
         'image',
+        'price',
+        'new',
+        'hit',
+        'sale',
     ];
     /* ... */
     public function category() {

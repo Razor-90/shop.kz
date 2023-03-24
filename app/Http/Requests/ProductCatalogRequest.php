@@ -12,11 +12,13 @@ class ProductCatalogRequest extends FormRequest
     ];
 
     public function authorize() {
-        return parent::authorize();
+        return true;
     }
 
     public function rules() {
-        return parent::rules();
+        return [
+            'name' => 'required',
+        ];
     }
 
     /**
