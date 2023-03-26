@@ -26,7 +26,7 @@ class BasketController extends Controller {
     /**
      * Форма оформления заказа
      */
-    public function checkout() {
+    public function checkout(Request $request) {
         $profile = null;
         $profiles = null;
         if (auth()->check()) { // если пользователь аутентифицирован

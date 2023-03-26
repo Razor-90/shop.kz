@@ -70,6 +70,9 @@
                 <th></th>
             </tr>
         </table>
+        <a class="nav-link" href="/basket/checkout">
+            Оплата
+        </a>
     @else
         <p>Ваша корзина пуста</p>
     @endif
