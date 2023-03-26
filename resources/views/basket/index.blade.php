@@ -70,9 +70,7 @@
                 <th></th>
             </tr>
         </table>
-        <a class="nav-link" href="/basket/checkout">
-            Оплата
-        </a>
+        <a class="btn btn-outline-danger mb-4 mt-0" href="/basket/checkout">Оформить заказ</a>
     @else
         <p>Ваша корзина пуста</p>
     @endif
